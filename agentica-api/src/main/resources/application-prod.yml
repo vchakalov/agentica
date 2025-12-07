@@ -1,0 +1,13 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.agentica: INFO
+
+agentica:
+  adk:
+    dev-ui-enabled: false

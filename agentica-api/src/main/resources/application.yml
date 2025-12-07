@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: agentica
+
+  profiles:
+    active: dev
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.agentica: DEBUG
+
+# Agentica Configuration
+agentica:
+  adk:
+    gemini-api-key: ${GEMINI_API_KEY:}
+    default-model: gemini-2.0-flash
+    dev-ui-enabled: false
+    dev-server-port: 8081
+
+  integrations:
+    default-timeout-ms: 30000
+    retry-attempts: 3
+    retry-delay-ms: 1000
