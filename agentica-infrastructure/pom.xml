@@ -20,7 +20,12 @@
             <artifactId>agentica-core</artifactId>
         </dependency>
 
-        <!-- JPA and Database (uncomment when needed) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- JPA and Database (uncomment when ready for PostgreSQL) -->
         <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>

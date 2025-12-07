@@ -37,6 +37,12 @@ public record Event(
 
         String externalId,
 
+        String category,
+
+        Integer priority,
+
+        String filterReasoning,
+
         Instant receivedAt,
 
         Instant processedAt,
