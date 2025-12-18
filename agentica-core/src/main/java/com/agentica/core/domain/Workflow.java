@@ -10,9 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
 import java.util.List;
 
-/**
- * Represents a workflow execution plan created by the orchestrator agent.
- */
 @Builder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Workflow(

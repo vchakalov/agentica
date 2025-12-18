@@ -26,6 +26,7 @@
         <module>agentica-agents</module>
         <module>agentica-integrations</module>
         <module>agentica-workflows</module>
+        <module>agentica-event-sources</module>
         <module>agentica-api</module>
     </modules>
 
@@ -42,6 +43,9 @@
 
         <!-- Google ADK Version -->
         <google-adk.version>0.4.0</google-adk.version>
+
+        <!-- LangGraph4j Version -->
+        <langgraph4j.version>1.7.6</langgraph4j.version>
 
         <!-- Other Dependencies -->
         <lombok.version>1.18.34</lombok.version>
@@ -86,6 +90,11 @@
                 <artifactId>agentica-workflows</artifactId>
                 <version>${agentica.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.agentica</groupId>
+                <artifactId>agentica-event-sources</artifactId>
+                <version>${agentica.version}</version>
+            </dependency>
 
             <!-- Google ADK -->
             <dependency>
@@ -97,6 +106,25 @@
                 <groupId>com.google.adk</groupId>
                 <artifactId>google-adk-dev</artifactId>
                 <version>${google-adk.version}</version>
+            </dependency>
+
+            <!-- LangGraph4j -->
+            <dependency>
+                <groupId>org.bsc.langgraph4j</groupId>
+                <artifactId>langgraph4j-bom</artifactId>
+                <version>${langgraph4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bsc.langgraph4j</groupId>
+                <artifactId>langgraph4j-core</artifactId>
+                <version>${langgraph4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bsc.langgraph4j</groupId>
+                <artifactId>langgraph4j-studio-springboot</artifactId>
+                <version>${langgraph4j.version}</version>
             </dependency>
 
             <!-- Utilities -->

@@ -4,46 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentica Mission Control</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="https://unpkg.com/panzoom@9.4.3/dist/panzoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
-            --bg-void: #05060a;
-            --bg-primary: #0a0c12;
-            --bg-secondary: #0f1218;
-            --bg-tertiary: #141820;
-            --bg-elevated: #1a1f28;
-            --bg-modal: #0d0f14;
-            --border-subtle: #1a1f2a;
-            --border-default: #242a38;
-            --border-accent: #2e3648;
-            --text-primary: #eaedf3;
-            --text-secondary: #9ca3b4;
-            --text-muted: #5c6478;
-            --text-dim: #3a4052;
-            --accent-teal: #14b8a6;
-            --accent-teal-dim: rgba(20, 184, 166, 0.15);
-            --accent-emerald: #10b981;
-            --accent-emerald-dim: rgba(16, 185, 129, 0.15);
-            --accent-violet: #8b5cf6;
-            --accent-violet-dim: rgba(139, 92, 246, 0.15);
-            --accent-amber: #f59e0b;
-            --accent-amber-dim: rgba(245, 158, 11, 0.15);
-            --accent-rose: #f43f5e;
-            --accent-rose-dim: rgba(244, 63, 94, 0.15);
-            --accent-sky: #0ea5e9;
-            --accent-sky-dim: rgba(14, 165, 233, 0.15);
+            --bg-void: #06060a;
+            --bg-primary: #0c0c14;
+            --bg-secondary: #12121c;
+            --bg-tertiary: #181824;
+            --bg-elevated: #1e1e2c;
+            --bg-surface: #242434;
+            --border-subtle: #1a1a28;
+            --border-default: #282840;
+            --border-accent: #3a3a58;
+            --border-glow: #4a4a6a;
+            --text-primary: #f0f0f8;
+            --text-secondary: #b0b0c8;
+            --text-muted: #707090;
+            --text-dim: #505068;
+            --accent-cyan: #00e5ff;
+            --accent-cyan-dim: rgba(0, 229, 255, 0.15);
+            --accent-cyan-glow: rgba(0, 229, 255, 0.4);
+            --accent-green: #00ff9d;
+            --accent-green-dim: rgba(0, 255, 157, 0.15);
+            --accent-amber: #ffb800;
+            --accent-amber-dim: rgba(255, 184, 0, 0.15);
+            --accent-red: #ff3d6e;
+            --accent-red-dim: rgba(255, 61, 110, 0.15);
+            --accent-purple: #b366ff;
+            --accent-purple-dim: rgba(179, 102, 255, 0.15);
+            --accent-blue: #4d9fff;
+            --modal-backdrop: rgba(6, 6, 10, 0.92);
+            --shadow-glow: 0 0 60px rgba(0, 229, 255, 0.08);
+            --shadow-modal: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255,255,255,0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'JetBrains Mono', monospace;
@@ -55,23 +55,51 @@
             overflow: hidden;
         }
 
+        /* Subtle grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px),
+                linear-gradient(var(--border-subtle) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .container {
             display: grid;
             grid-template-rows: 56px 1fr 52px;
             height: 100vh;
-            background: linear-gradient(135deg, var(--bg-void) 0%, #080a10 100%);
+            position: relative;
+            z-index: 1;
         }
 
-        /* ═══════════════════════════════════════════════════════════════════
-           HEADER
-           ═══════════════════════════════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER - Compact with Event Badge
+           ═══════════════════════════════════════════════════════════════ */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-subtle);
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border-default);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 50%, transparent 100%);
+            opacity: 0.4;
         }
 
         .header-left {
@@ -87,41 +115,39 @@
         }
 
         .logo-mark {
-            width: 28px;
-            height: 28px;
-            border: 2px solid var(--accent-teal);
-            border-radius: 6px;
-            display: grid;
-            place-items: center;
-            font-size: 12px;
-            color: var(--accent-teal);
-            background: var(--accent-teal-dim);
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--bg-void);
+            box-shadow: 0 0 20px var(--accent-cyan-glow);
         }
 
         .logo-text {
             font-family: 'Outfit', sans-serif;
-            font-size: 15px;
+            font-size: 20px;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .logo-sub {
-            font-size: 9px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* Event Badge - Compact clickable */
+        /* Event Badge - Clickable */
         .event-badge {
             display: none;
             align-items: center;
-            gap: 10px;
-            padding: 6px 14px;
+            gap: 12px;
+            padding: 8px 16px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-default);
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -130,25 +156,31 @@
 
         .event-badge:hover {
             background: var(--bg-elevated);
-            border-color: var(--accent-teal);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px var(--accent-cyan-dim);
         }
 
-        .event-badge-type {
+        .event-type-tag {
+            padding: 4px 10px;
+            background: var(--accent-cyan-dim);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 4px;
+            color: var(--accent-cyan);
             font-size: 10px;
             font-weight: 600;
-            color: var(--accent-teal);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .event-badge-source {
-            font-size: 10px;
+        .event-source-text {
+            font-size: 11px;
             color: var(--text-muted);
         }
 
-        .event-badge-arrow {
-            color: var(--text-dim);
+        .event-expand-hint {
             font-size: 10px;
+            color: var(--text-dim);
+            margin-left: 8px;
         }
 
         .header-right {
@@ -161,7 +193,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px;
+            padding: 6px 14px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-subtle);
             border-radius: 20px;
@@ -174,16 +206,24 @@
             background: var(--text-dim);
         }
 
-        .status-dot.ready { background: var(--accent-emerald); box-shadow: 0 0 8px var(--accent-emerald); }
-        .status-dot.active { background: var(--accent-violet); box-shadow: 0 0 8px var(--accent-violet); animation: pulse 2s infinite; }
+        .status-dot.ready {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        .status-dot.active {
+            background: var(--accent-purple);
+            box-shadow: 0 0 10px var(--accent-purple);
+            animation: pulse 2s ease-in-out infinite;
+        }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.15); }
+            50% { opacity: 0.7; transform: scale(1.2); }
         }
 
         .status-label {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -195,92 +235,45 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* ═══════════════════════════════════════════════════════════════════
-           MAIN LAYOUT
-           ═══════════════════════════════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════════════════════════
+           MAIN LAYOUT - Graph Hero + Timeline Sidebar
+           ═══════════════════════════════════════════════════════════════ */
         .main {
             display: grid;
-            grid-template-columns: 1fr 340px;
+            grid-template-columns: 1fr 360px;
             overflow: hidden;
         }
 
-        /* Graph Panel - Now full height */
+        /* Graph Panel - Full Width Hero */
         .graph-panel {
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-primary);
-            border-right: 1px solid var(--border-subtle);
             position: relative;
-        }
-
-        .graph-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 16px;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .graph-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-        }
-
-        .graph-hint {
-            font-size: 10px;
-            color: var(--text-dim);
+            background: var(--bg-primary);
+            overflow: hidden;
         }
 
         .graph-container {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
+            position: absolute;
+            inset: 0;
             background:
-                radial-gradient(ellipse at 30% 20%, rgba(20, 184, 166, 0.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
-                repeating-linear-gradient(0deg, transparent, transparent 49px, var(--border-subtle) 49px, var(--border-subtle) 50px),
-                repeating-linear-gradient(90deg, transparent, transparent 49px, var(--border-subtle) 49px, var(--border-subtle) 50px);
+                radial-gradient(ellipse at 30% 20%, rgba(0, 229, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(179, 102, 255, 0.03) 0%, transparent 50%);
         }
 
         .graph-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .no-workflow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: var(--text-dim);
-        }
-
-        .no-workflow-icon {
-            font-size: 40px;
-            opacity: 0.3;
-            margin-bottom: 12px;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100%;
+            min-height: 100%;
         }
 
         .graph-controls {
             position: absolute;
-            bottom: 16px;
-            right: 16px;
+            bottom: 20px;
+            right: 20px;
             display: flex;
             gap: 6px;
+            z-index: 20;
         }
 
         .graph-btn {
@@ -291,43 +284,81 @@
             color: var(--text-secondary);
             border-radius: 8px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 16px;
             transition: all 0.15s ease;
         }
 
         .graph-btn:hover {
             background: var(--bg-elevated);
-            border-color: var(--accent-teal);
-            color: var(--accent-teal);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
         }
 
-        .zoom-indicator {
+        .zoom-badge {
             position: absolute;
-            bottom: 16px;
-            left: 16px;
+            bottom: 20px;
+            left: 20px;
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
             font-size: 10px;
             color: var(--text-dim);
-            background: var(--bg-secondary);
-            padding: 4px 10px;
-            border-radius: 4px;
-            border: 1px solid var(--border-subtle);
         }
 
-        /* Right Panel - Timeline */
+        .no-workflow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .no-workflow-icon {
+            font-size: 64px;
+            opacity: 0.15;
+            margin-bottom: 16px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .no-workflow-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .no-workflow-hint {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        /* Timeline Sidebar */
         .timeline-panel {
             display: flex;
             flex-direction: column;
-            background: var(--bg-primary);
-            overflow: hidden;
-        }
-
-        .timeline-header {
-            padding: 10px 16px;
             background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-subtle);
+            border-left: 1px solid var(--border-default);
+            overflow: hidden;
+            min-height: 0;  /* Allow flex child to shrink and enable scrolling */
         }
 
-        .timeline-title {
+        .panel-header {
+            padding: 14px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .panel-title {
             font-family: 'Outfit', sans-serif;
             font-size: 11px;
             font-weight: 600;
@@ -340,10 +371,11 @@
             flex: 1;
             overflow-y: auto;
             padding: 12px;
+            min-height: 0;  /* Enable scrolling in flex container */
         }
 
-        .timeline-scroll::-webkit-scrollbar { width: 5px; }
-        .timeline-scroll::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .timeline-scroll::-webkit-scrollbar { width: 6px; }
+        .timeline-scroll::-webkit-scrollbar-track { background: transparent; }
         .timeline-scroll::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
 
         .timeline-section {
@@ -355,26 +387,40 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: var(--text-dim);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             padding-left: 4px;
         }
 
+        /* Timeline Items */
         .timeline-item {
+            position: relative;
             padding: 12px 14px;
             margin-bottom: 8px;
-            background: var(--bg-secondary);
+            background: var(--bg-primary);
             border-radius: 8px;
+            border: 1px solid var(--border-subtle);
             border-left: 3px solid var(--text-dim);
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
-        .timeline-item:hover { background: var(--bg-tertiary); }
+        .timeline-item:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-default);
+        }
 
-        .timeline-item.completed { border-left-color: var(--accent-emerald); }
-        .timeline-item.running { border-left-color: var(--accent-violet); background: var(--accent-violet-dim); }
+        .timeline-item.completed { border-left-color: var(--accent-green); }
+        .timeline-item.running {
+            border-left-color: var(--accent-purple);
+            animation: item-pulse 2s ease-in-out infinite;
+        }
         .timeline-item.escalated { border-left-color: var(--accent-amber); }
-        .timeline-item.failed { border-left-color: var(--accent-rose); }
+        .timeline-item.failed { border-left-color: var(--accent-red); }
+
+        @keyframes item-pulse {
+            0%, 100% { background: var(--bg-primary); }
+            50% { background: var(--bg-tertiary); }
+        }
 
         .timeline-item-header {
             display: flex;
@@ -383,33 +429,33 @@
             margin-bottom: 6px;
         }
 
-        .timeline-item-name {
+        .timeline-node-name {
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
             font-size: 12px;
             color: var(--text-primary);
         }
 
-        .timeline-item-badge {
+        .timeline-agent-tag {
             font-size: 9px;
             padding: 2px 6px;
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             border-radius: 3px;
-            color: var(--accent-teal);
+            color: var(--accent-cyan);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .timeline-item-meta {
             display: flex;
             gap: 12px;
             font-size: 10px;
-            color: var(--text-muted);
+            color: var(--text-dim);
         }
 
-        .timeline-item-escalation {
+        .timeline-escalation-badge {
             margin-top: 8px;
-            padding: 8px 10px;
+            padding: 6px 10px;
             background: var(--accent-amber-dim);
             border-radius: 4px;
             font-size: 10px;
@@ -418,41 +464,50 @@
 
         /* Replan Items */
         .replan-item {
+            position: relative;
             padding: 12px 14px;
             margin-bottom: 8px;
             background: linear-gradient(135deg, var(--accent-amber-dim) 0%, transparent 100%);
             border-radius: 8px;
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(255, 184, 0, 0.25);
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
-        .replan-item:hover { border-color: var(--accent-amber); }
+        .replan-item:hover {
+            background: linear-gradient(135deg, rgba(255, 184, 0, 0.12) 0%, transparent 100%);
+            border-color: rgba(255, 184, 0, 0.4);
+        }
 
-        .replan-item-header {
+        .replan-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 6px;
         }
 
-        .replan-badge {
+        .replan-tag {
             font-size: 9px;
-            font-weight: 600;
             padding: 2px 6px;
             background: var(--accent-amber);
-            color: var(--bg-void);
             border-radius: 3px;
+            color: var(--bg-void);
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         .replan-action {
             font-size: 10px;
-            color: var(--text-secondary);
+            color: var(--accent-amber);
         }
 
         .replan-trigger {
             font-size: 10px;
-            color: var(--accent-rose);
+            color: var(--text-muted);
+        }
+
+        .replan-trigger strong {
+            color: var(--accent-red);
         }
 
         /* Empty State */
@@ -461,36 +516,34 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 32px;
+            padding: 40px 20px;
             color: var(--text-dim);
             text-align: center;
         }
 
         .empty-state-icon {
-            font-size: 24px;
-            opacity: 0.4;
-            margin-bottom: 8px;
+            font-size: 28px;
+            opacity: 0.3;
+            margin-bottom: 10px;
         }
 
-        /* ═══════════════════════════════════════════════════════════════════
-           FOOTER
-           ═══════════════════════════════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════════════════════════
+           FOOTER - Execution Info + History
+           ═══════════════════════════════════════════════════════════════ */
         .footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 20px;
             background: var(--bg-secondary);
-            border-top: 1px solid var(--border-subtle);
+            border-top: 1px solid var(--border-default);
         }
 
         .exec-info {
-            display: none;
+            display: flex;
             align-items: center;
             gap: 24px;
         }
-
-        .exec-info.visible { display: flex; }
 
         .exec-item {
             display: flex;
@@ -507,153 +560,218 @@
 
         .exec-value {
             font-size: 11px;
-            color: var(--text-primary);
-        }
-
-        .exec-value.running { color: var(--accent-violet); }
-        .exec-value.completed { color: var(--accent-emerald); }
-        .exec-value.failed { color: var(--accent-rose); }
-
-        .history-scroll {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 8px 0;
-            max-width: 50%;
-        }
-
-        .history-scroll::-webkit-scrollbar { height: 3px; }
-        .history-scroll::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
-
-        .history-chip {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-size: 10px;
             color: var(--text-secondary);
         }
 
-        .history-chip:hover { border-color: var(--border-accent); }
-        .history-chip.selected { border-color: var(--accent-teal); }
+        .exec-value.running { color: var(--accent-purple); }
+        .exec-value.completed { color: var(--accent-green); }
+        .exec-value.failed { color: var(--accent-red); }
+        .exec-value.aborted { color: var(--accent-amber); }
 
-        .history-chip-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
+        .history-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .history-chip-dot.COMPLETED { background: var(--accent-emerald); }
-        .history-chip-dot.FAILED { background: var(--accent-rose); }
-        .history-chip-dot.RUNNING { background: var(--accent-violet); }
-        .history-chip-dot.ABORTED { background: var(--accent-amber); }
-
-        .back-btn {
+        .history-btn {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: var(--text-muted);
             font-size: 10px;
-            color: var(--accent-teal);
-            background: none;
-            border: none;
             cursor: pointer;
-            padding: 4px 8px;
+            transition: all 0.15s ease;
         }
 
-        .back-btn:hover { text-decoration: underline; }
+        .history-btn:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border-default);
+            color: var(--text-secondary);
+        }
 
-        /* ═══════════════════════════════════════════════════════════════════
-           MODALS
-           ═══════════════════════════════════════════════════════════════════ */
-        .modal-overlay {
+        .history-btn.active {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .back-to-live {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 6px;
+            color: var(--accent-cyan);
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: none;
+        }
+
+        .back-to-live.visible { display: block; }
+
+        .back-to-live:hover {
+            background: var(--accent-cyan-dim);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MODAL SYSTEM
+           ═══════════════════════════════════════════════════════════════ */
+        .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(5, 6, 10, 0.85);
-            backdrop-filter: blur(4px);
-            display: none;
-            place-items: center;
+            background: var(--modal-backdrop);
+            backdrop-filter: blur(8px);
             z-index: 1000;
-            padding: 24px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
         }
 
-        .modal-overlay.visible { display: grid; }
+        .modal-backdrop.visible {
+            opacity: 1;
+            visibility: visible;
+        }
 
         .modal {
-            background: var(--bg-modal);
-            border: 1px solid var(--border-default);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 720px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 90%;
+            max-width: 800px;
             max-height: 85vh;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 16px;
+            box-shadow: var(--shadow-modal);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
-            animation: modalIn 0.2s ease;
+            overflow: hidden;
         }
 
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.96) translateY(8px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-subtle);
+            padding: 18px 24px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-default);
         }
 
         .modal-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-title-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-cyan-dim);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
         }
 
         .modal-close {
             width: 32px;
             height: 32px;
+            background: transparent;
             border: 1px solid var(--border-subtle);
-            background: var(--bg-tertiary);
+            border-radius: 8px;
             color: var(--text-muted);
-            border-radius: 6px;
             cursor: pointer;
             font-size: 18px;
             transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
             background: var(--bg-elevated);
+            border-color: var(--border-default);
             color: var(--text-primary);
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 2px;
+            padding: 12px 24px 0;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .modal-tab {
+            padding: 10px 18px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: -1px;
+        }
+
+        .modal-tab:hover {
+            color: var(--text-secondary);
+        }
+
+        .modal-tab.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
         }
 
         .modal-body {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 24px;
         }
 
-        .modal-body::-webkit-scrollbar { width: 5px; }
-        .modal-body::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
+        .modal-body::-webkit-scrollbar { width: 8px; }
+        .modal-body::-webkit-scrollbar-track { background: var(--bg-tertiary); }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 4px; }
 
-        /* Modal Sections */
+        /* Modal Content Sections */
         .modal-section {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
-        .modal-section:last-child { margin-bottom: 0; }
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
 
         .modal-section-title {
+            font-family: 'Outfit', sans-serif;
             font-size: 10px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: var(--text-dim);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -666,34 +784,149 @@
             background: var(--border-subtle);
         }
 
-        .modal-grid {
+        .info-grid {
             display: grid;
             grid-template-columns: 120px 1fr;
-            gap: 8px 16px;
+            gap: 10px 16px;
         }
 
-        .modal-label {
+        .info-label {
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--text-dim);
         }
 
-        .modal-value {
+        .info-value {
             font-size: 11px;
             color: var(--text-primary);
             word-break: break-word;
         }
 
-        .modal-value.accent-teal { color: var(--accent-teal); }
-        .modal-value.accent-amber { color: var(--accent-amber); }
-        .modal-value.accent-rose { color: var(--accent-rose); }
-        .modal-value.accent-emerald { color: var(--accent-emerald); }
-        .modal-value.accent-violet { color: var(--accent-violet); }
+        .info-value.cyan { color: var(--accent-cyan); }
+        .info-value.green { color: var(--accent-green); }
+        .info-value.amber { color: var(--accent-amber); }
+        .info-value.red { color: var(--accent-red); }
+        .info-value.purple { color: var(--accent-purple); }
 
-        /* Code Viewer */
+        /* Plan Comparison */
+        .plan-comparison {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .plan-side {
+            flex: 1;
+            background: var(--bg-void);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .plan-header {
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .plan-header.previous {
+            background: var(--accent-red-dim);
+            color: var(--accent-red);
+        }
+
+        .plan-header.new {
+            background: var(--accent-green-dim);
+            color: var(--accent-green);
+        }
+
+        .plan-arrow {
+            font-size: 24px;
+            color: var(--text-dim);
+            padding-top: 40px;
+        }
+
+        .plan-summary {
+            padding: 14px;
+        }
+
+        .plan-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .plan-entry {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .plan-entry .cyan { color: var(--accent-cyan); }
+
+        .plan-nodes-title, .plan-edges-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin: 12px 0 6px;
+        }
+
+        .plan-nodes-list, .plan-edges-list {
+            font-size: 11px;
+        }
+
+        .plan-node-item, .plan-edge-item {
+            padding: 4px 0;
+            color: var(--text-secondary);
+        }
+
+        .plan-node-item .node-id {
+            color: var(--accent-cyan);
+        }
+
+        .plan-node-item .node-type {
+            color: var(--text-dim);
+            margin-left: 8px;
+            font-size: 10px;
+        }
+
+        .plan-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 11px;
+        }
+
+        /* Collapsible Sections */
+        .modal-section-title.collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .modal-section-title.collapsible:hover {
+            color: var(--accent-cyan);
+        }
+
+        .modal-section-title .toggle-icon {
+            font-size: 10px;
+            margin-left: auto;
+            margin-right: 12px;
+            color: var(--text-dim);
+        }
+
+        .collapsible-content {
+            margin-top: -8px;
+        }
+
+        /* Code/JSON Viewer */
         .code-viewer {
             background: var(--bg-void);
             border: 1px solid var(--border-subtle);
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
         }
 
@@ -701,177 +934,125 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
-            background: var(--bg-tertiary);
+            padding: 10px 14px;
+            background: var(--bg-primary);
             border-bottom: 1px solid var(--border-subtle);
         }
 
         .code-viewer-label {
             font-size: 10px;
-            color: var(--text-muted);
+            color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .code-viewer-copy {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
-            color: var(--accent-teal);
-            background: none;
-            border: none;
             cursor: pointer;
+            transition: all 0.15s ease;
         }
 
-        .code-viewer-copy:hover { text-decoration: underline; }
+        .code-viewer-copy:hover {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+        }
 
         .code-viewer-content {
-            padding: 12px 14px;
+            padding: 16px;
+            max-height: 300px;
+            overflow: auto;
             font-size: 11px;
             line-height: 1.6;
-            overflow-x: auto;
-            max-height: 300px;
-            overflow-y: auto;
         }
+
+        .code-viewer-content::-webkit-scrollbar { width: 6px; height: 6px; }
+        .code-viewer-content::-webkit-scrollbar-track { background: transparent; }
+        .code-viewer-content::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
 
         .code-viewer-content pre {
             margin: 0;
-            background: transparent !important;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .code-viewer-content code {
-            background: transparent !important;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            background: transparent !important;
+            padding: 0 !important;
         }
 
         /* Markdown Viewer */
         .md-viewer {
-            background: var(--bg-tertiary);
+            background: var(--bg-primary);
             border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 20px;
             font-size: 12px;
             line-height: 1.7;
             color: var(--text-secondary);
         }
 
         .md-viewer h1, .md-viewer h2, .md-viewer h3 {
+            font-family: 'Outfit', sans-serif;
             color: var(--text-primary);
             margin: 16px 0 8px;
-            font-family: 'Outfit', sans-serif;
         }
 
         .md-viewer h1 { font-size: 18px; }
         .md-viewer h2 { font-size: 15px; }
         .md-viewer h3 { font-size: 13px; }
 
-        .md-viewer p { margin: 8px 0; }
-        .md-viewer ul, .md-viewer ol { padding-left: 20px; margin: 8px 0; }
-        .md-viewer code { background: var(--bg-void); padding: 2px 6px; border-radius: 3px; font-size: 11px; }
-        .md-viewer pre { background: var(--bg-void); padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
-        .md-viewer pre code { padding: 0; }
+        .md-viewer p { margin: 10px 0; }
 
-        /* Token Badges */
-        .token-badges {
-            display: flex;
-            gap: 8px;
-        }
-
-        .token-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
+        .md-viewer code {
             background: var(--bg-tertiary);
-            border-radius: 4px;
-            font-size: 10px;
-        }
-
-        .token-badge.input { color: var(--accent-emerald); }
-        .token-badge.output { color: var(--accent-violet); }
-
-        /* LLM Message */
-        .llm-message {
-            margin-bottom: 12px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .llm-message-header {
-            padding: 8px 12px;
-            background: var(--bg-tertiary);
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-dim);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .llm-message.system .llm-message-header { color: var(--accent-teal); }
-        .llm-message.user .llm-message-header { color: var(--accent-emerald); }
-        .llm-message.assistant .llm-message-header { color: var(--accent-violet); }
-
-        .llm-message-content {
-            padding: 12px;
-            font-size: 11px;
-            color: var(--text-secondary);
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        /* Tool Call */
-        .tool-call {
-            margin-bottom: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-subtle);
-            overflow: hidden;
-        }
-
-        .tool-call-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .tool-call-name {
-            font-weight: 600;
-            color: var(--accent-sky);
-            font-size: 11px;
-        }
-
-        .tool-call-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        .tool-call-status {
             padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 9px;
-            font-weight: 600;
+            border-radius: 4px;
+            font-size: 11px;
         }
 
-        .tool-call-status.success { background: var(--accent-emerald-dim); color: var(--accent-emerald); }
-        .tool-call-status.error { background: var(--accent-rose-dim); color: var(--accent-rose); }
-
-        .tool-call-body {
-            padding: 12px;
+        .md-viewer pre {
+            background: var(--bg-void);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 14px;
+            overflow-x: auto;
+            margin: 12px 0;
         }
 
-        .tool-call-section {
-            margin-bottom: 10px;
+        .md-viewer pre code {
+            background: transparent;
+            padding: 0;
         }
 
-        .tool-call-section:last-child { margin-bottom: 0; }
+        .md-viewer ul, .md-viewer ol {
+            margin: 10px 0;
+            padding-left: 24px;
+        }
 
-        .tool-call-section-label {
+        .md-viewer li { margin: 4px 0; }
+
+        /* Payload Grid */
+        .payload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .payload-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .payload-key {
             font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -879,60 +1060,216 @@
             margin-bottom: 6px;
         }
 
-        /* Payload Grid */
-        .payload-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
-        }
-
-        .payload-item {
-            padding: 10px 12px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-        }
-
-        .payload-key {
-            font-size: 9px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
         .payload-value {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-primary);
             word-break: break-word;
         }
 
-        /* Tabs */
-        .modal-tabs {
+        /* LLM Message Cards */
+        .llm-message {
+            margin-bottom: 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .llm-message-header {
             display: flex;
-            gap: 4px;
-            padding: 0 20px;
-            background: var(--bg-secondary);
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-subtle);
         }
 
-        .modal-tab {
-            padding: 10px 16px;
+        .llm-role {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .llm-role.system { color: var(--accent-cyan); }
+        .llm-role.user { color: var(--accent-green); }
+        .llm-role.assistant { color: var(--accent-purple); }
+
+        .llm-message-body {
+            padding: 14px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Tool Call Cards */
+        .tool-call-card {
+            margin-bottom: 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-amber);
+            overflow: hidden;
+        }
+
+        .tool-call-card.success { border-left-color: var(--accent-green); }
+        .tool-call-card.error { border-left-color: var(--accent-red); }
+
+        .tool-call-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .tool-name {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            font-size: 12px;
+        }
+
+        .tool-duration {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .tool-call-body {
+            padding: 14px;
+        }
+
+        .tool-section {
+            margin-bottom: 12px;
+        }
+
+        .tool-section:last-child { margin-bottom: 0; }
+
+        .tool-section-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .tool-section-content {
+            background: var(--bg-void);
+            border-radius: 6px;
+            padding: 10px;
             font-size: 11px;
-            color: var(--text-muted);
-            background: none;
-            border: none;
+            max-height: 120px;
+            overflow: auto;
+        }
+
+        .tool-error {
+            color: var(--accent-red);
+            padding: 10px;
+            background: var(--accent-red-dim);
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        /* Token Stats */
+        .token-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .token-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .token-stat-label {
+            color: var(--text-dim);
+        }
+
+        .token-stat-value {
+            font-weight: 600;
+        }
+
+        .token-stat-value.input { color: var(--accent-green); }
+        .token-stat-value.output { color: var(--accent-purple); }
+
+        /* History Modal */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .history-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 16px;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
             transition: all 0.15s ease;
         }
 
-        .modal-tab:hover { color: var(--text-secondary); }
-        .modal-tab.active { color: var(--accent-teal); border-bottom-color: var(--accent-teal); }
+        .history-card:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-default);
+        }
+
+        .history-card.selected {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px var(--accent-cyan-dim);
+        }
+
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .history-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .history-status-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .history-status-badge.COMPLETED { background: var(--accent-green-dim); color: var(--accent-green); }
+        .history-status-badge.FAILED { background: var(--accent-red-dim); color: var(--accent-red); }
+        .history-status-badge.ABORTED { background: var(--accent-amber-dim); color: var(--accent-amber); }
+        .history-status-badge.RUNNING { background: var(--accent-purple-dim); color: var(--accent-purple); }
+
+        .history-card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
 
         /* Mermaid Overrides */
         .mermaid { background: transparent !important; }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -941,18 +1278,18 @@
         <header class="header">
             <div class="header-left">
                 <div class="logo">
-                    <div class="logo-mark">◆</div>
-                    <div>
-                        <div class="logo-text">AGENTICA</div>
-                        <div class="logo-sub">Mission Control</div>
-                    </div>
+                    <div class="logo-mark">A</div>
+                    <span class="logo-text">Agentica</span>
                 </div>
+
+                <!-- Compact Event Badge -->
                 <div id="event-badge" class="event-badge" onclick="openEventModal()">
-                    <span id="event-badge-type" class="event-badge-type">-</span>
-                    <span id="event-badge-source" class="event-badge-source">-</span>
-                    <span class="event-badge-arrow">▸</span>
+                    <span id="event-type-tag" class="event-type-tag">-</span>
+                    <span id="event-source-text" class="event-source-text">-</span>
+                    <span class="event-expand-hint">Click for details</span>
                 </div>
             </div>
+
             <div class="header-right">
                 <div class="status-pill">
                     <div id="status-dot" class="status-dot"></div>
@@ -966,37 +1303,33 @@
         <main class="main">
             <!-- Graph Panel -->
             <div class="graph-panel">
-                <div class="graph-header">
-                    <span class="graph-title">Workflow Graph</span>
-                    <span class="graph-hint">Scroll to zoom • Drag to pan</span>
-                </div>
                 <div id="graph-container" class="graph-container">
                     <div id="graph-wrapper" class="graph-wrapper">
                         <div id="mermaid-container"></div>
                     </div>
                     <div id="no-workflow" class="no-workflow">
-                        <div class="no-workflow-icon">◇</div>
-                        <div>Awaiting Workflow</div>
-                        <div style="font-size: 10px; margin-top: 4px;">Send an event to begin</div>
+                        <div class="no-workflow-icon">&#9673;</div>
+                        <div class="no-workflow-text">Awaiting Workflow</div>
+                        <div class="no-workflow-hint">Send an event to begin orchestration</div>
                     </div>
                     <div class="graph-controls">
                         <button class="graph-btn" onclick="zoomIn()" title="Zoom In">+</button>
                         <button class="graph-btn" onclick="zoomOut()" title="Zoom Out">−</button>
                         <button class="graph-btn" onclick="resetZoom()" title="Reset">⟲</button>
                     </div>
-                    <div id="zoom-indicator" class="zoom-indicator">100%</div>
+                    <div id="zoom-badge" class="zoom-badge">100%</div>
                 </div>
             </div>
 
             <!-- Timeline Panel -->
             <div class="timeline-panel">
-                <div class="timeline-header">
-                    <span class="timeline-title">Execution Timeline</span>
+                <div class="panel-header">
+                    <span class="panel-title">Execution Timeline</span>
                 </div>
                 <div id="timeline-scroll" class="timeline-scroll">
                     <div class="empty-state">
-                        <div class="empty-state-icon">◌</div>
-                        <div>No activity</div>
+                        <div class="empty-state-icon">&#8987;</div>
+                        <div>No activity yet</div>
                     </div>
                 </div>
             </div>
@@ -1004,7 +1337,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <div id="exec-info" class="exec-info">
+            <div class="exec-info">
                 <div class="exec-item">
                     <span class="exec-label">Event</span>
                     <span id="exec-event-id" class="exec-value">-</span>
@@ -1026,104 +1359,148 @@
                     <span id="exec-replans" class="exec-value">0</span>
                 </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <button id="back-btn" class="back-btn" style="display: none;" onclick="clearSelection()">← Live View</button>
-                <div id="history-scroll" class="history-scroll"></div>
+            <div class="history-nav">
+                <button class="history-btn" onclick="openHistoryModal()">View History</button>
+                <button id="back-to-live" class="back-to-live" onclick="backToLive()">← Back to Live</button>
             </div>
         </footer>
     </div>
 
-    <!-- Event Modal -->
-    <div id="event-modal" class="modal-overlay" onclick="closeModal(event, 'event-modal')">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <span class="modal-title">Event Details</span>
-                <button class="modal-close" onclick="closeModalById('event-modal')">×</button>
+    <!-- Modal Backdrop -->
+    <div id="modal-backdrop" class="modal-backdrop" onclick="closeModal()"></div>
+
+    <!-- Event Details Modal -->
+    <div id="event-modal" class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-title-icon">&#9889;</div>
+                <span>Event Details</span>
             </div>
-            <div id="event-modal-body" class="modal-body"></div>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="event-modal-content"></div>
         </div>
     </div>
 
-    <!-- Node Modal -->
-    <div id="node-modal" class="modal-overlay" onclick="closeModal(event, 'node-modal')">
-        <div class="modal" style="max-width: 800px;" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <span id="node-modal-title" class="modal-title">Node Details</span>
-                <button class="modal-close" onclick="closeModalById('node-modal')">×</button>
+    <!-- Node Details Modal -->
+    <div id="node-modal" class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-title-icon">&#9881;</div>
+                <span id="node-modal-title">Node Details</span>
             </div>
-            <div id="node-modal-tabs" class="modal-tabs"></div>
-            <div id="node-modal-body" class="modal-body"></div>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-tabs" id="node-modal-tabs">
+            <button class="modal-tab active" data-tab="overview" onclick="switchTab('node', 'overview')">Overview</button>
+            <button class="modal-tab" data-tab="llm" onclick="switchTab('node', 'llm')">LLM</button>
+            <button class="modal-tab" data-tab="tools" onclick="switchTab('node', 'tools')">Tools</button>
+            <button class="modal-tab" data-tab="output" onclick="switchTab('node', 'output')">Output</button>
+        </div>
+        <div class="modal-body">
+            <div id="node-tab-overview" class="tab-content active"></div>
+            <div id="node-tab-llm" class="tab-content"></div>
+            <div id="node-tab-tools" class="tab-content"></div>
+            <div id="node-tab-output" class="tab-content"></div>
         </div>
     </div>
 
-    <!-- Replan Modal -->
-    <div id="replan-modal" class="modal-overlay" onclick="closeModal(event, 'replan-modal')">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <span id="replan-modal-title" class="modal-title">Replan Details</span>
-                <button class="modal-close" onclick="closeModalById('replan-modal')">×</button>
+    <!-- Replan Details Modal -->
+    <div id="replan-modal" class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-title-icon" style="background: var(--accent-amber-dim); border-color: var(--accent-amber);">&#8635;</div>
+                <span id="replan-modal-title">Replan Details</span>
             </div>
-            <div id="replan-modal-body" class="modal-body"></div>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="replan-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="modal" style="max-width: 900px;">
+        <div class="modal-header">
+            <div class="modal-title">
+                <div class="modal-title-icon">&#128203;</div>
+                <span>Execution History</span>
+            </div>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="history-modal-content"></div>
         </div>
     </div>
 
     <script>
-        // Initialize
+        // Initialize Mermaid
         mermaid.initialize({
             startOnLoad: false,
             theme: 'dark',
             themeVariables: {
-                primaryColor: '#141820',
-                primaryTextColor: '#eaedf3',
-                primaryBorderColor: '#242a38',
-                lineColor: '#2e3648',
-                secondaryColor: '#0f1218',
-                tertiaryColor: '#0a0c12',
+                primaryColor: '#1e1e2c',
+                primaryTextColor: '#f0f0f8',
+                primaryBorderColor: '#282840',
+                lineColor: '#3a3a58',
+                secondaryColor: '#12121c',
+                tertiaryColor: '#0c0c14',
                 background: 'transparent',
-                mainBkg: '#141820',
-                nodeBorder: '#242a38'
+                mainBkg: '#1e1e2c',
+                nodeBorder: '#282840'
             },
-            flowchart: { curve: 'basis', padding: 20, nodeSpacing: 50, rankSpacing: 60 }
+            flowchart: {
+                curve: 'basis',
+                padding: 20,
+                nodeSpacing: 50,
+                rankSpacing: 70
+            }
         });
 
+        // State
         let currentState = null;
         let selectedEventId = null;
         let panzoomInstance = null;
+        let activeModal = null;
+        let currentViewedEventId = null;  // Track which execution is currently displayed
+        let savedTransform = null;        // Save pan/zoom position between renders
 
-        // Panzoom
-        function initPanzoom() {
-            const wrapper = document.getElementById('graph-wrapper');
-            if (panzoomInstance) panzoomInstance.dispose();
-            panzoomInstance = panzoom(wrapper, {
-                maxZoom: 5, minZoom: 0.2, initialZoom: 1,
-                bounds: false, boundsPadding: 0.1, smoothScroll: false
-            });
-            panzoomInstance.on('zoom', e => {
-                document.getElementById('zoom-indicator').textContent = Math.round(e.getTransform().scale * 100) + '%';
-            });
-        }
+        // ═══════════════════════════════════════════════════════════════
+        // UTILITY FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════
 
-        function zoomIn() { if (panzoomInstance) { const t = panzoomInstance.getTransform(); panzoomInstance.zoomTo(t.x, t.y, t.scale * 1.2); } }
-        function zoomOut() { if (panzoomInstance) { const t = panzoomInstance.getTransform(); panzoomInstance.zoomTo(t.x, t.y, t.scale * 0.8); } }
-        function resetZoom() { if (panzoomInstance) { panzoomInstance.moveTo(0, 0); panzoomInstance.zoomAbs(0, 0, 1); } }
-
-        // Utilities
         function formatDuration(ms) {
             if (!ms || ms === 0) return '-';
-            if (ms < 1000) return ms + 'ms';
-            if (ms < 60000) return (ms / 1000).toFixed(1) + 's';
-            return (ms / 60000).toFixed(1) + 'm';
+            if (ms < 1000) return `${ms}ms`;
+            if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+            return `${(ms / 60000).toFixed(1)}m`;
         }
 
-        function formatTime(ts) { return ts ? new Date(ts).toLocaleTimeString() : '-'; }
+        function formatTime(timestamp) {
+            if (!timestamp) return '-';
+            return new Date(timestamp).toLocaleTimeString();
+        }
 
-        function truncate(s, n) { return s && s.length > n ? s.substring(0, n) + '…' : (s || ''); }
+        function truncate(text, maxLen) {
+            if (!text) return '';
+            if (text.length <= maxLen) return text;
+            return text.substring(0, maxLen) + '...';
+        }
 
-        function escapeHtml(s) {
-            if (!s) return '';
-            const d = document.createElement('div');
-            d.textContent = s;
-            return d.innerHTML;
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = original, 1500);
+            });
         }
 
         function updateTime() {
@@ -1132,63 +1509,194 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // Modal System
-        function openModal(id) { document.getElementById(id).classList.add('visible'); }
-        function closeModalById(id) { document.getElementById(id).classList.remove('visible'); }
-        function closeModal(e, id) { if (e.target.classList.contains('modal-overlay')) closeModalById(id); }
+        // ═══════════════════════════════════════════════════════════════
+        // PANZOOM
+        // ═══════════════════════════════════════════════════════════════
+
+        function initPanzoom(restorePosition = false) {
+            const wrapper = document.getElementById('graph-wrapper');
+
+            if (panzoomInstance) {
+                panzoomInstance.dispose();
+                panzoomInstance = null;
+            }
+
+            // Reset transform before initializing
+            wrapper.style.transform = '';
+
+            panzoomInstance = panzoom(wrapper, {
+                maxZoom: 5,
+                minZoom: 0.2,
+                initialZoom: 1,
+                bounds: false,
+                smoothScroll: false
+            });
+
+            panzoomInstance.on('zoom', (e) => {
+                document.getElementById('zoom-badge').textContent = Math.round(e.getTransform().scale * 100) + '%';
+            });
+
+            // Restore previous position or center the graph
+            if (restorePosition && savedTransform) {
+                // Restore saved pan/zoom position
+                panzoomInstance.zoomAbs(savedTransform.x, savedTransform.y, savedTransform.scale);
+                document.getElementById('zoom-badge').textContent = Math.round(savedTransform.scale * 100) + '%';
+            } else {
+                // Center the graph in the viewport (new execution)
+                centerGraph();
+                document.getElementById('zoom-badge').textContent = '100%';
+            }
+        }
+
+        function centerGraph() {
+            // Use requestAnimationFrame to ensure SVG is fully rendered
+            requestAnimationFrame(() => {
+                if (!panzoomInstance) return;
+
+                const wrapper = document.getElementById('graph-wrapper');
+                const container = document.getElementById('graph-container');
+                const svg = wrapper.querySelector('svg');
+
+                if (!svg) return;
+
+                const containerRect = container.getBoundingClientRect();
+                const svgRect = svg.getBoundingClientRect();
+
+                // Calculate center position
+                const x = (containerRect.width - svgRect.width) / 2;
+                const y = (containerRect.height - svgRect.height) / 2;
+
+                // Move to center position
+                panzoomInstance.moveTo(x, y);
+            });
+        }
+
+        function zoomIn() {
+            if (panzoomInstance) {
+                const t = panzoomInstance.getTransform();
+                panzoomInstance.zoomTo(t.x, t.y, t.scale * 1.25);
+            }
+        }
+
+        function zoomOut() {
+            if (panzoomInstance) {
+                const t = panzoomInstance.getTransform();
+                panzoomInstance.zoomTo(t.x, t.y, t.scale * 0.8);
+            }
+        }
+
+        function resetZoom() {
+            // Clear saved transform so we re-center
+            savedTransform = null;
+
+            if (panzoomInstance) {
+                panzoomInstance.dispose();
+                panzoomInstance = null;
+            }
+
+            const wrapper = document.getElementById('graph-wrapper');
+            wrapper.style.transform = '';
+            initPanzoom(false);  // false = center the graph
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // MODAL SYSTEM
+        // ═══════════════════════════════════════════════════════════════
+
+        function openModal(modalId) {
+            closeModal();
+            document.getElementById('modal-backdrop').classList.add('visible');
+            document.getElementById(modalId).classList.add('visible');
+            activeModal = modalId;
+        }
+
+        function closeModal() {
+            document.getElementById('modal-backdrop').classList.remove('visible');
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('visible'));
+            activeModal = null;
+        }
+
+        function switchTab(modalType, tabName) {
+            const tabs = document.querySelectorAll(`#${modalType}-modal-tabs .modal-tab`);
+            tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+
+            const prefix = modalType === 'node' ? 'node-tab-' : '';
+            document.querySelectorAll(`[id^="${prefix}"]`).forEach(c => {
+                if (c.classList.contains('tab-content')) {
+                    c.classList.toggle('active', c.id === `${prefix}${tabName}`);
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // EVENT MODAL
+        // ═══════════════════════════════════════════════════════════════
 
         function openEventModal() {
             if (!currentState?.triggerEvent) return;
-            const ev = currentState.triggerEvent;
+
+            const event = currentState.triggerEvent;
             let html = `
                 <div class="modal-section">
                     <div class="modal-section-title">Event Information</div>
-                    <div class="modal-grid">
-                        <span class="modal-label">Event ID</span>
-                        <span class="modal-value">${escapeHtml(ev.id)}</span>
-                        <span class="modal-label">Type</span>
-                        <span class="modal-value accent-teal">${escapeHtml(ev.eventType)}</span>
-                        <span class="modal-label">Source</span>
-                        <span class="modal-value">${escapeHtml(ev.source)}</span>
-                        <span class="modal-label">Received</span>
-                        <span class="modal-value">${formatTime(ev.receivedAt)}</span>
-                        ${ev.externalId ? `<span class="modal-label">External ID</span><span class="modal-value">${escapeHtml(ev.externalId)}</span>` : ''}
-                        ${ev.category ? `<span class="modal-label">Category</span><span class="modal-value">${escapeHtml(ev.category)}</span>` : ''}
-                        ${ev.priority ? `<span class="modal-label">Priority</span><span class="modal-value">${ev.priority}</span>` : ''}
+                    <div class="info-grid">
+                        <span class="info-label">Event ID</span>
+                        <span class="info-value">${escapeHtml(event.id || '-')}</span>
+                        <span class="info-label">Type</span>
+                        <span class="info-value cyan">${escapeHtml(event.eventType || '-')}</span>
+                        <span class="info-label">Source</span>
+                        <span class="info-value">${escapeHtml(event.source || '-')}</span>
+                        <span class="info-label">Received</span>
+                        <span class="info-value">${formatTime(event.receivedAt)}</span>
                     </div>
                 </div>
             `;
 
-            if (ev.payload && Object.keys(ev.payload).length > 0) {
+            if (event.payload && Object.keys(event.payload).length > 0) {
                 html += `
                     <div class="modal-section">
                         <div class="modal-section-title">Payload</div>
                         <div class="payload-grid">
-                            ${Object.entries(ev.payload).map(([k, v]) => `
-                                <div class="payload-item">
-                                    <div class="payload-key">${escapeHtml(k)}</div>
-                                    <div class="payload-value">${escapeHtml(typeof v === 'object' ? JSON.stringify(v) : String(v))}</div>
-                                </div>
-                            `).join('')}
+                `;
+
+                for (const [key, value] of Object.entries(event.payload)) {
+                    const displayValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+                    html += `
+                        <div class="payload-card">
+                            <div class="payload-key">${escapeHtml(key)}</div>
+                            <div class="payload-value">${escapeHtml(truncate(displayValue, 100))}</div>
                         </div>
-                    </div>
+                    `;
+                }
+
+                html += '</div></div>';
+
+                // Full JSON view
+                const jsonStr = JSON.stringify(event.payload, null, 2);
+                html += `
                     <div class="modal-section">
-                        <div class="modal-section-title">Raw Payload (JSON)</div>
+                        <div class="modal-section-title">Raw JSON</div>
                         <div class="code-viewer">
                             <div class="code-viewer-header">
-                                <span class="code-viewer-label">JSON</span>
-                                <button class="code-viewer-copy" onclick="copyToClipboard(\`${escapeHtml(JSON.stringify(ev.payload, null, 2))}\`)">Copy</button>
+                                <span class="code-viewer-label">application/json</span>
+                                <button class="code-viewer-copy" onclick="copyToClipboard(${JSON.stringify(jsonStr)}, this)">Copy</button>
                             </div>
-                            <div class="code-viewer-content"><pre><code class="language-json">${escapeHtml(JSON.stringify(ev.payload, null, 2))}</code></pre></div>
+                            <div class="code-viewer-content">
+                                <pre><code class="language-json">${escapeHtml(jsonStr)}</code></pre>
+                            </div>
                         </div>
                     </div>
                 `;
             }
 
-            document.getElementById('event-modal-body').innerHTML = html;
+            document.getElementById('event-modal-content').innerHTML = html;
             hljs.highlightAll();
             openModal('event-modal');
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // NODE MODAL
+        // ═══════════════════════════════════════════════════════════════
 
         function openNodeModal(nodeId) {
             const node = currentState?.timeline?.find(n => n.nodeId === nodeId);
@@ -1196,231 +1704,207 @@
 
             document.getElementById('node-modal-title').textContent = `Node: ${node.nodeId}`;
 
-            // Build tabs
-            const hasLLM = node.agentExecutions?.some(e => e.llmInteraction);
-            const hasTools = node.agentExecutions?.some(e => e.toolCalls?.length > 0);
-            const hasOutput = node.output;
-            const hasEscalation = node.escalationReason;
+            // Overview Tab
+            let overviewHtml = `
+                <div class="modal-section">
+                    <div class="modal-section-title">Node Information</div>
+                    <div class="info-grid">
+                        <span class="info-label">Node ID</span>
+                        <span class="info-value">${escapeHtml(node.nodeId)}</span>
+                        <span class="info-label">Agent Type</span>
+                        <span class="info-value cyan">${node.agentType || '-'}</span>
+                        <span class="info-label">Status</span>
+                        <span class="info-value ${(node.status || '').toLowerCase()}">${node.status || '-'}</span>
+                        <span class="info-label">Started</span>
+                        <span class="info-value">${formatTime(node.startedAt)}</span>
+                        <span class="info-label">Duration</span>
+                        <span class="info-value">${formatDuration(node.durationMs)}</span>
+                    </div>
+                </div>
+            `;
 
-            let tabs = ['Overview'];
-            if (hasLLM) tabs.push('LLM');
-            if (hasTools) tabs.push('Tools');
-            if (hasOutput) tabs.push('Output');
-            if (hasEscalation) tabs.push('Escalation');
-
-            document.getElementById('node-modal-tabs').innerHTML = tabs.map((t, i) =>
-                `<button class="modal-tab${i === 0 ? ' active' : ''}" onclick="switchNodeTab('${t}', this)">${t}</button>`
-            ).join('');
-
-            renderNodeTab('Overview', node);
-            openModal('node-modal');
-        }
-
-        function switchNodeTab(tab, btn) {
-            document.querySelectorAll('#node-modal-tabs .modal-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            const node = currentState?.timeline?.find(n => n.nodeId === document.getElementById('node-modal-title').textContent.replace('Node: ', ''));
-            if (node) renderNodeTab(tab, node);
-        }
-
-        function renderNodeTab(tab, node) {
-            const body = document.getElementById('node-modal-body');
-            let html = '';
-
-            if (tab === 'Overview') {
-                html = `
+            if (node.escalationReason) {
+                overviewHtml += `
                     <div class="modal-section">
-                        <div class="modal-section-title">Execution Details</div>
-                        <div class="modal-grid">
-                            <span class="modal-label">Node ID</span>
-                            <span class="modal-value">${escapeHtml(node.nodeId)}</span>
-                            <span class="modal-label">Agent Type</span>
-                            <span class="modal-value accent-teal">${node.agentType || '-'}</span>
-                            <span class="modal-label">Status</span>
-                            <span class="modal-value ${node.status === 'COMPLETED' ? 'accent-emerald' : node.status === 'ESCALATED' ? 'accent-amber' : node.status === 'FAILED' ? 'accent-rose' : ''}">${node.status || '-'}</span>
-                            <span class="modal-label">Started</span>
-                            <span class="modal-value">${formatTime(node.startedAt)}</span>
-                            <span class="modal-label">Duration</span>
-                            <span class="modal-value">${formatDuration(node.durationMs)}</span>
+                        <div class="modal-section-title">Escalation</div>
+                        <div class="info-grid">
+                            <span class="info-label">Reason</span>
+                            <span class="info-value amber">${escapeHtml(node.escalationReason)}</span>
                         </div>
+                        ${node.escalationContext ? `
+                            <div style="margin-top: 12px;">
+                                <div class="code-viewer">
+                                    <div class="code-viewer-header">
+                                        <span class="code-viewer-label">Error Context</span>
+                                    </div>
+                                    <div class="code-viewer-content">
+                                        <pre style="color: var(--accent-red);">${escapeHtml(node.escalationContext)}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
+            }
 
-                if (node.agentExecutions?.length > 0) {
-                    const totalTokensIn = node.agentExecutions.reduce((sum, e) => sum + (e.llmInteraction?.inputTokens || 0), 0);
-                    const totalTokensOut = node.agentExecutions.reduce((sum, e) => sum + (e.llmInteraction?.outputTokens || 0), 0);
-                    const totalToolCalls = node.agentExecutions.reduce((sum, e) => sum + (e.toolCalls?.length || 0), 0);
+            document.getElementById('node-tab-overview').innerHTML = overviewHtml;
 
-                    html += `
-                        <div class="modal-section">
-                            <div class="modal-section-title">Summary</div>
-                            <div class="modal-grid">
-                                <span class="modal-label">LLM Calls</span>
-                                <span class="modal-value">${node.agentExecutions.filter(e => e.llmInteraction).length}</span>
-                                <span class="modal-label">Total Tokens</span>
-                                <span class="modal-value">
-                                    <span class="token-badge input">IN ${totalTokensIn}</span>
-                                    <span class="token-badge output">OUT ${totalTokensOut}</span>
-                                </span>
-                                <span class="modal-label">Tool Calls</span>
-                                <span class="modal-value">${totalToolCalls}</span>
-                            </div>
-                        </div>
-                    `;
+            // LLM Tab
+            let llmHtml = '';
+            if (node.agentExecutions && node.agentExecutions.length > 0) {
+                for (const exec of node.agentExecutions) {
+                    if (exec.llmInteraction) {
+                        const llm = exec.llmInteraction;
+                        llmHtml += `
+                            <div class="modal-section">
+                                <div class="modal-section-title">${exec.phase || 'LLM Interaction'}</div>
+                                <div class="info-grid" style="margin-bottom: 16px;">
+                                    <span class="info-label">Model</span>
+                                    <span class="info-value">${escapeHtml(llm.model || '-')}</span>
+                                    <span class="info-label">Latency</span>
+                                    <span class="info-value">${formatDuration(llm.latencyMs)}</span>
+                                </div>
+                                <div class="token-stats" style="margin-bottom: 16px;">
+                                    <div class="token-stat">
+                                        <span class="token-stat-label">Input:</span>
+                                        <span class="token-stat-value input">${llm.inputTokens || 0}</span>
+                                    </div>
+                                    <div class="token-stat">
+                                        <span class="token-stat-label">Output:</span>
+                                        <span class="token-stat-value output">${llm.outputTokens || 0}</span>
+                                    </div>
+                                </div>
+                        `;
+
+                        if (llm.systemPrompt) {
+                            llmHtml += `
+                                <div style="margin-bottom: 16px;">
+                                    <div class="llm-message">
+                                        <div class="llm-message-header">
+                                            <span class="llm-role system">System Prompt</span>
+                                        </div>
+                                        <div class="llm-message-body">${escapeHtml(llm.systemPrompt)}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        if (llm.messages && llm.messages.length > 0) {
+                            for (const msg of llm.messages) {
+                                llmHtml += `
+                                    <div class="llm-message">
+                                        <div class="llm-message-header">
+                                            <span class="llm-role ${msg.role || 'unknown'}">${msg.role || 'unknown'}</span>
+                                        </div>
+                                        <div class="llm-message-body">${escapeHtml(msg.content || '')}</div>
+                                    </div>
+                                `;
+                            }
+                        }
+
+                        if (llm.rawResponse) {
+                            const rawResp = llm.rawResponse;
+                            llmHtml += `
+                                <div class="code-viewer" style="margin-top: 16px;">
+                                    <div class="code-viewer-header">
+                                        <span class="code-viewer-label">Raw Response</span>
+                                        <button class="code-viewer-copy" onclick="copyToClipboard(${JSON.stringify(rawResp)}, this)">Copy</button>
+                                    </div>
+                                    <div class="code-viewer-content">
+                                        <pre>${escapeHtml(rawResp)}</pre>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        llmHtml += '</div>';
+                    }
                 }
             }
 
-            else if (tab === 'LLM') {
-                node.agentExecutions?.filter(e => e.llmInteraction).forEach((exec, i) => {
-                    const llm = exec.llmInteraction;
-                    html += `
-                        <div class="modal-section">
-                            <div class="modal-section-title">LLM Call ${i + 1} - ${exec.phase || 'Unknown Phase'}</div>
-                            <div class="modal-grid" style="margin-bottom: 16px;">
-                                <span class="modal-label">Model</span>
-                                <span class="modal-value">${escapeHtml(llm.model || '-')}</span>
-                                <span class="modal-label">Latency</span>
-                                <span class="modal-value">${formatDuration(llm.latencyMs)}</span>
-                                <span class="modal-label">Tokens</span>
-                                <span class="modal-value token-badges">
-                                    <span class="token-badge input">IN ${llm.inputTokens || 0}</span>
-                                    <span class="token-badge output">OUT ${llm.outputTokens || 0}</span>
-                                </span>
-                            </div>
-                    `;
+            document.getElementById('node-tab-llm').innerHTML = llmHtml || '<div class="empty-state"><div class="empty-state-icon">&#128172;</div><div>No LLM interactions</div></div>';
 
-                    if (llm.systemPrompt) {
-                        html += `
-                            <div style="margin-bottom: 16px;">
-                                <div class="llm-message system">
-                                    <div class="llm-message-header">System Prompt</div>
-                                    <div class="llm-message-content">${escapeHtml(llm.systemPrompt)}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    if (llm.messages?.length > 0) {
-                        html += '<div style="margin-bottom: 16px;">';
-                        llm.messages.forEach(m => {
-                            html += `
-                                <div class="llm-message ${m.role || 'unknown'}">
-                                    <div class="llm-message-header">${m.role || 'Unknown'}</div>
-                                    <div class="llm-message-content">${escapeHtml(m.content)}</div>
-                                </div>
-                            `;
-                        });
-                        html += '</div>';
-                    }
-
-                    if (llm.rawResponse) {
-                        html += `
-                            <div class="code-viewer">
-                                <div class="code-viewer-header">
-                                    <span class="code-viewer-label">Raw Response</span>
-                                    <button class="code-viewer-copy" onclick="copyToClipboard(\`${escapeHtml(llm.rawResponse).replace(/`/g, '\\`')}\`)">Copy</button>
-                                </div>
-                                <div class="code-viewer-content"><pre><code>${escapeHtml(llm.rawResponse)}</code></pre></div>
-                            </div>
-                        `;
-                    }
-
-                    html += '</div>';
-                });
-            }
-
-            else if (tab === 'Tools') {
-                node.agentExecutions?.filter(e => e.toolCalls?.length > 0).forEach((exec, i) => {
-                    html += `<div class="modal-section"><div class="modal-section-title">Tool Calls - ${exec.phase || 'Phase ' + (i + 1)}</div>`;
-                    exec.toolCalls.forEach(tc => {
-                        html += `
-                            <div class="tool-call">
-                                <div class="tool-call-header">
-                                    <span class="tool-call-name">${escapeHtml(tc.toolName)}</span>
-                                    <div class="tool-call-meta">
-                                        <span>${formatDuration(tc.durationMs)}</span>
-                                        <span class="tool-call-status ${tc.success ? 'success' : 'error'}">${tc.success ? 'SUCCESS' : 'ERROR'}</span>
+            // Tools Tab
+            let toolsHtml = '';
+            if (node.agentExecutions && node.agentExecutions.length > 0) {
+                for (const exec of node.agentExecutions) {
+                    if (exec.toolCalls && exec.toolCalls.length > 0) {
+                        for (const tc of exec.toolCalls) {
+                            const tcClass = tc.success ? 'success' : (tc.error ? 'error' : '');
+                            toolsHtml += `
+                                <div class="tool-call-card ${tcClass}">
+                                    <div class="tool-call-header">
+                                        <span class="tool-name">${escapeHtml(tc.toolName || 'unknown')}</span>
+                                        <span class="tool-duration">${formatDuration(tc.durationMs)}</span>
                                     </div>
-                                </div>
-                                <div class="tool-call-body">
-                                    ${tc.toolInput ? `
-                                        <div class="tool-call-section">
-                                            <div class="tool-call-section-label">Input</div>
-                                            <div class="code-viewer">
-                                                <div class="code-viewer-content"><pre><code class="language-json">${escapeHtml(tc.toolInput)}</code></pre></div>
-                                            </div>
-                                        </div>
-                                    ` : ''}
-                                    ${tc.toolOutput ? `
-                                        <div class="tool-call-section">
-                                            <div class="tool-call-section-label">Output</div>
-                                            <div class="code-viewer">
-                                                <div class="code-viewer-content"><pre><code>${escapeHtml(tc.toolOutput)}</code></pre></div>
-                                            </div>
-                                        </div>
-                                    ` : ''}
-                                    ${tc.error ? `
-                                        <div class="tool-call-section">
-                                            <div class="tool-call-section-label" style="color: var(--accent-rose);">Error</div>
-                                            <div style="color: var(--accent-rose); font-size: 11px;">${escapeHtml(tc.error)}</div>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        `;
-                    });
-                    html += '</div>';
-                });
+                                    <div class="tool-call-body">
+                            `;
+
+                            if (tc.toolInput) {
+                                toolsHtml += `
+                                    <div class="tool-section">
+                                        <div class="tool-section-label">Input</div>
+                                        <div class="tool-section-content"><pre>${escapeHtml(tc.toolInput)}</pre></div>
+                                    </div>
+                                `;
+                            }
+
+                            if (tc.toolOutput) {
+                                toolsHtml += `
+                                    <div class="tool-section">
+                                        <div class="tool-section-label">Output</div>
+                                        <div class="tool-section-content"><pre>${escapeHtml(tc.toolOutput)}</pre></div>
+                                    </div>
+                                `;
+                            }
+
+                            if (tc.error) {
+                                toolsHtml += `<div class="tool-error">${escapeHtml(tc.error)}</div>`;
+                            }
+
+                            toolsHtml += '</div></div>';
+                        }
+                    }
+                }
             }
 
-            else if (tab === 'Output') {
-                const output = node.output;
-                const isJson = typeof output === 'object';
-                const formatted = isJson ? JSON.stringify(output, null, 2) : String(output || '');
+            document.getElementById('node-tab-tools').innerHTML = toolsHtml || '<div class="empty-state"><div class="empty-state-icon">&#128295;</div><div>No tool calls</div></div>';
 
-                html = `
+            // Output Tab
+            let outputHtml = '';
+            if (node.output) {
+                const outputStr = typeof node.output === 'object' ? JSON.stringify(node.output, null, 2) : String(node.output);
+                const isJson = typeof node.output === 'object';
+
+                outputHtml = `
                     <div class="modal-section">
                         <div class="modal-section-title">Node Output</div>
                         <div class="code-viewer">
                             <div class="code-viewer-header">
-                                <span class="code-viewer-label">${isJson ? 'JSON' : 'Text'}</span>
-                                <button class="code-viewer-copy" onclick="copyToClipboard(\`${escapeHtml(formatted).replace(/`/g, '\\`')}\`)">Copy</button>
+                                <span class="code-viewer-label">${isJson ? 'application/json' : 'text/plain'}</span>
+                                <button class="code-viewer-copy" onclick="copyToClipboard(${JSON.stringify(outputStr)}, this)">Copy</button>
                             </div>
-                            <div class="code-viewer-content"><pre><code class="${isJson ? 'language-json' : ''}">${escapeHtml(formatted)}</code></pre></div>
+                            <div class="code-viewer-content">
+                                <pre><code class="${isJson ? 'language-json' : ''}">${escapeHtml(outputStr)}</code></pre>
+                            </div>
                         </div>
                     </div>
                 `;
+            } else {
+                outputHtml = '<div class="empty-state"><div class="empty-state-icon">&#128196;</div><div>No output data</div></div>';
             }
 
-            else if (tab === 'Escalation') {
-                html = `
-                    <div class="modal-section">
-                        <div class="modal-section-title">Escalation Details</div>
-                        <div class="modal-grid">
-                            <span class="modal-label">Reason</span>
-                            <span class="modal-value accent-amber">${escapeHtml(node.escalationReason)}</span>
-                        </div>
-                    </div>
-                `;
+            document.getElementById('node-tab-output').innerHTML = outputHtml;
 
-                if (node.escalationContext) {
-                    html += `
-                        <div class="modal-section">
-                            <div class="modal-section-title">Context / Error</div>
-                            <div class="code-viewer">
-                                <div class="code-viewer-header">
-                                    <span class="code-viewer-label">Error Details</span>
-                                </div>
-                                <div class="code-viewer-content" style="color: var(--accent-rose);"><pre>${escapeHtml(node.escalationContext)}</pre></div>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            body.innerHTML = html;
+            // Reset to overview tab
+            switchTab('node', 'overview');
             hljs.highlightAll();
+            openModal('node-modal');
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // REPLAN MODAL
+        // ═══════════════════════════════════════════════════════════════
 
         function openReplanModal(idx) {
             const replan = currentState?.replans?.[idx];
@@ -1431,24 +1915,26 @@
             let html = `
                 <div class="modal-section">
                     <div class="modal-section-title">Replan Information</div>
-                    <div class="modal-grid">
-                        <span class="modal-label">Replan #</span>
-                        <span class="modal-value">${replan.replanNumber}</span>
-                        <span class="modal-label">Action</span>
-                        <span class="modal-value accent-amber">${replan.action || '-'}</span>
-                        <span class="modal-label">Trigger Node</span>
-                        <span class="modal-value accent-rose">${escapeHtml(replan.triggerNodeId || '-')}</span>
-                        <span class="modal-label">Resume From</span>
-                        <span class="modal-value">${escapeHtml(replan.resumeFrom || '-')}</span>
-                        <span class="modal-label">Time</span>
-                        <span class="modal-value">${formatTime(replan.timestamp)}</span>
+                    <div class="info-grid">
+                        <span class="info-label">Replan #</span>
+                        <span class="info-value">${replan.replanNumber}</span>
+                        <span class="info-label">Action</span>
+                        <span class="info-value amber">${replan.action || '-'}</span>
+                        <span class="info-label">Trigger Node</span>
+                        <span class="info-value red">${escapeHtml(replan.triggerNodeId || '-')}</span>
+                        <span class="info-label">Resume From</span>
+                        <span class="info-value">${escapeHtml(replan.resumeFrom || '-')}</span>
+                        <span class="info-label">Time</span>
+                        <span class="info-value">${formatTime(replan.timestamp)}</span>
                     </div>
                 </div>
 
                 <div class="modal-section">
                     <div class="modal-section-title">Escalation Reason</div>
                     <div class="code-viewer">
-                        <div class="code-viewer-content">${escapeHtml(replan.escalationReason || 'No reason provided')}</div>
+                        <div class="code-viewer-content">
+                            <pre>${escapeHtml(replan.escalationReason || 'No reason provided')}</pre>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1456,9 +1942,11 @@
             if (replan.escalationContext) {
                 html += `
                     <div class="modal-section">
-                        <div class="modal-section-title">Escalation Context (Error)</div>
+                        <div class="modal-section-title">Error Context</div>
                         <div class="code-viewer">
-                            <div class="code-viewer-content" style="color: var(--accent-rose);">${escapeHtml(replan.escalationContext)}</div>
+                            <div class="code-viewer-content">
+                                <pre style="color: var(--accent-red);">${escapeHtml(replan.escalationContext)}</pre>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1466,14 +1954,17 @@
 
             if (replan.guidance) {
                 // Try to render as markdown
-                const isMarkdown = replan.guidance.includes('#') || replan.guidance.includes('*') || replan.guidance.includes('-');
+                let guidanceHtml;
+                try {
+                    guidanceHtml = marked.parse(replan.guidance);
+                } catch {
+                    guidanceHtml = `<pre>${escapeHtml(replan.guidance)}</pre>`;
+                }
+
                 html += `
                     <div class="modal-section">
                         <div class="modal-section-title">Orchestrator Guidance</div>
-                        ${isMarkdown
-                            ? `<div class="md-viewer">${marked.parse(replan.guidance)}</div>`
-                            : `<div class="code-viewer"><div class="code-viewer-content">${escapeHtml(replan.guidance)}</div></div>`
-                        }
+                        <div class="md-viewer">${guidanceHtml}</div>
                     </div>
                 `;
             }
@@ -1483,28 +1974,186 @@
                     <div class="modal-section">
                         <div class="modal-section-title">Abort Reason</div>
                         <div class="code-viewer">
-                            <div class="code-viewer-content" style="color: var(--accent-rose);">${escapeHtml(replan.abortReason)}</div>
+                            <div class="code-viewer-content">
+                                <pre style="color: var(--accent-red);">${escapeHtml(replan.abortReason)}</pre>
+                            </div>
                         </div>
                     </div>
                 `;
             }
 
-            document.getElementById('replan-modal-body').innerHTML = html;
+            // Workflow Plan Comparison
+            if (replan.previousPlan || replan.newPlan) {
+                html += `
+                    <div class="modal-section">
+                        <div class="modal-section-title">Workflow Plan Comparison</div>
+                        <div class="plan-comparison">
+                            <div class="plan-side">
+                                <div class="plan-header previous">Previous Plan (v${replan.previousPlan?.version || '?'})</div>
+                                ${renderPlanSummary(replan.previousPlan)}
+                            </div>
+                            <div class="plan-arrow">→</div>
+                            <div class="plan-side">
+                                <div class="plan-header new">New Plan (v${replan.newPlan?.version || '?'})</div>
+                                ${renderPlanSummary(replan.newPlan)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // LLM Prompt
+            if (replan.llmPrompt) {
+                html += `
+                    <div class="modal-section">
+                        <div class="modal-section-title collapsible" onclick="toggleSection(this)">
+                            <span>LLM Prompt</span>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                        <div class="collapsible-content" style="display: none;">
+                            <div class="code-viewer">
+                                <div class="code-viewer-content">
+                                    <pre>${escapeHtml(replan.llmPrompt)}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // LLM Response
+            if (replan.llmResponse) {
+                html += `
+                    <div class="modal-section">
+                        <div class="modal-section-title collapsible" onclick="toggleSection(this)">
+                            <span>LLM Response (Raw JSON)</span>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                        <div class="collapsible-content" style="display: none;">
+                            <div class="code-viewer">
+                                <div class="code-viewer-content">
+                                    <pre>${formatJsonSafe(replan.llmResponse)}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('replan-modal-content').innerHTML = html;
             openModal('replan-modal');
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                // Could show a toast
-            });
+        function renderPlanSummary(plan) {
+            if (!plan) return '<div class="plan-empty">No plan data</div>';
+
+            let html = `<div class="plan-summary">`;
+            html += `<div class="plan-name">${escapeHtml(plan.workflowName || 'Unnamed')}</div>`;
+            html += `<div class="plan-entry">Entry: <span class="cyan">${escapeHtml(plan.entryPoint || '-')}</span></div>`;
+
+            if (plan.nodes && plan.nodes.length > 0) {
+                html += `<div class="plan-nodes-title">Nodes (${plan.nodes.length}):</div>`;
+                html += `<div class="plan-nodes-list">`;
+                for (const node of plan.nodes) {
+                    html += `<div class="plan-node-item">
+                        <span class="node-id">${escapeHtml(node.id)}</span>
+                        <span class="node-type">${escapeHtml(node.agentType || '-')}</span>
+                    </div>`;
+                }
+                html += `</div>`;
+            }
+
+            if (plan.edges && plan.edges.length > 0) {
+                html += `<div class="plan-edges-title">Edges (${plan.edges.length}):</div>`;
+                html += `<div class="plan-edges-list">`;
+                for (const edge of plan.edges) {
+                    const label = edge.conditionKey ? `[${edge.conditionKey}]` : '';
+                    html += `<div class="plan-edge-item">
+                        ${escapeHtml(edge.from)} → ${escapeHtml(edge.to)} ${label}
+                    </div>`;
+                }
+                html += `</div>`;
+            }
+
+            html += `</div>`;
+            return html;
         }
 
-        // Graph
+        function toggleSection(titleEl) {
+            const content = titleEl.nextElementSibling;
+            const icon = titleEl.querySelector('.toggle-icon');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+            }
+        }
+
+        function formatJsonSafe(str) {
+            try {
+                const parsed = JSON.parse(str);
+                return escapeHtml(JSON.stringify(parsed, null, 2));
+            } catch {
+                return escapeHtml(str);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // HISTORY MODAL
+        // ═══════════════════════════════════════════════════════════════
+
+        function openHistoryModal() {
+            const history = currentState?.recentHistory || [];
+
+            let html = '';
+            if (history.length === 0) {
+                html = '<div class="empty-state"><div class="empty-state-icon">&#128203;</div><div>No execution history</div></div>';
+            } else {
+                html = '<div class="history-grid">';
+                for (const item of history) {
+                    const selected = item.eventId === selectedEventId ? 'selected' : '';
+                    html += `
+                        <div class="history-card ${selected}" onclick="selectExecution('${item.eventId}')">
+                            <div class="history-card-header">
+                                <span class="history-card-title">${escapeHtml(truncate(item.workflowName || 'Unknown', 30))}</span>
+                                <span class="history-status-badge ${item.state || 'UNKNOWN'}">${item.state || '-'}</span>
+                            </div>
+                            <div class="history-card-meta">
+                                <span>${formatTime(item.startedAt)}</span>
+                                <span>${formatDuration(item.durationMs)}</span>
+                                ${item.replanCount > 0 ? `<span style="color: var(--accent-amber);">${item.replanCount} replans</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+            }
+
+            document.getElementById('history-modal-content').innerHTML = html;
+            openModal('history-modal');
+        }
+
+        function selectExecution(eventId) {
+            selectedEventId = eventId;
+            closeModal();
+            fetchState();
+        }
+
+        function backToLive() {
+            selectedEventId = null;
+            fetchState();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // GRAPH RENDERING
+        // ═══════════════════════════════════════════════════════════════
+
         function buildMermaidDiagram(graph) {
-            if (!graph?.nodes?.length) return null;
+            if (!graph || !graph.nodes || graph.nodes.length === 0) return null;
 
             let diagram = 'flowchart TD\n';
-            diagram += '    START((Start)):::startNode\n';
 
             for (const node of graph.nodes) {
                 const status = (node.status || 'PENDING').toLowerCase();
@@ -1520,164 +2169,224 @@
 
             diagram += '    END((End)):::endNode\n';
 
-            const hasOrchestrator = graph.nodes.some(n => n.id === '__orchestrator__');
-            if (hasOrchestrator) {
-                diagram += `    START --> orchestrator\n`;
-            }
-
             for (const edge of graph.edges) {
-                const from = edge.from === 'START' ? 'START' : edge.from.replace(/__/g, '');
+                const from = edge.from.replace(/__/g, '');
                 const to = edge.to === 'END' ? 'END' : edge.to.replace(/__/g, '');
                 const label = edge.label ? `|${edge.label}|` : '';
                 diagram += `    ${from} -->${label} ${to}\n`;
             }
 
+            // Connect terminal nodes to END
             const nodesWithOutgoing = new Set(graph.edges.map(e => e.from));
-            graph.nodes.filter(n => n.id !== '__orchestrator__' && !nodesWithOutgoing.has(n.id)).forEach(n => {
-                diagram += `    ${n.id.replace(/__/g, '')} --> END\n`;
-            });
+            const terminalNodes = graph.nodes.filter(n =>
+                n.id !== '__orchestrator__' && !nodesWithOutgoing.has(n.id)
+            );
+            for (const node of terminalNodes) {
+                const nodeIdSafe = node.id.replace(/__/g, '');
+                diagram += `    ${nodeIdSafe} --> END\n`;
+            }
 
             diagram += `
-    classDef startNode fill:#0f1218,stroke:#14b8a6,stroke-width:2px,color:#14b8a6
-    classDef endNode fill:#0f1218,stroke:#10b981,stroke-width:2px,color:#10b981
-    classDef nodepending fill:#141820,stroke:#242a38,color:#5c6478
-    classDef noderunning fill:#1a1530,stroke:#8b5cf6,stroke-width:2px,color:#eaedf3
-    classDef nodecompleted fill:#0f1a18,stroke:#10b981,color:#eaedf3
-    classDef nodeescalated fill:#1a1810,stroke:#f59e0b,color:#eaedf3
-    classDef nodefailed fill:#1a1015,stroke:#f43f5e,color:#eaedf3
-    classDef nodereplanned fill:#101820,stroke:#0ea5e9,stroke-width:2px,color:#0ea5e9
+    classDef endNode fill:#0c0c14,stroke:#00ff9d,stroke-width:2px,color:#00ff9d
+    classDef nodepending fill:#1e1e2c,stroke:#282840,color:#707090
+    classDef noderunning fill:#2a2040,stroke:#b366ff,stroke-width:2px,color:#f0f0f8
+    classDef nodecompleted fill:#1a2e20,stroke:#00ff9d,color:#f0f0f8
+    classDef nodeescalated fill:#2e2a1a,stroke:#ffb800,color:#f0f0f8
+    classDef nodefailed fill:#2e1a1a,stroke:#ff3d6e,color:#f0f0f8
+    classDef nodereplanned fill:#1a2030,stroke:#00e5ff,stroke-width:2px,color:#00e5ff
 `;
+
             return diagram;
         }
 
-        async function renderGraph(state) {
+        async function renderGraph() {
             const container = document.getElementById('mermaid-container');
             const noWorkflow = document.getElementById('no-workflow');
 
-            if (!state?.graph?.nodes?.length) {
+            if (!currentState?.graph?.nodes?.length) {
                 container.innerHTML = '';
                 noWorkflow.style.display = 'block';
+                currentViewedEventId = null;
+                savedTransform = null;
                 return;
             }
 
             noWorkflow.style.display = 'none';
-            const diagram = buildMermaidDiagram(state.graph);
+
+            const diagram = buildMermaidDiagram(currentState.graph);
             if (!diagram) return;
 
+            // Determine if we're viewing the same execution or switching to a new one
+            const newEventId = currentState?.currentExecution?.eventId || currentState?.triggerEvent?.id || 'current';
+            const isSameExecution = (currentViewedEventId === newEventId);
+
+            // Save current transform if viewing same execution
+            if (isSameExecution && panzoomInstance) {
+                savedTransform = panzoomInstance.getTransform();
+            } else {
+                // Switching executions - reset saved transform
+                savedTransform = null;
+            }
+
             try {
+                // Dispose panzoom before clearing
+                if (panzoomInstance) {
+                    panzoomInstance.dispose();
+                    panzoomInstance = null;
+                }
+
+                // Reset wrapper transform and clear content
+                const wrapper = document.getElementById('graph-wrapper');
+                wrapper.style.transform = '';
+                container.innerHTML = '';
+
                 const { svg } = await mermaid.render('graph-' + Date.now(), diagram);
                 container.innerHTML = svg;
-                if (!panzoomInstance) initPanzoom();
+
+                // Make nodes clickable
+                container.querySelectorAll('.node').forEach(node => {
+                    node.style.cursor = 'pointer';
+                    node.addEventListener('click', () => {
+                        const nodeId = node.id.replace('flowchart-', '').split('-')[0];
+                        if (nodeId !== 'END' && nodeId !== 'orchestrator') {
+                            openNodeModal(nodeId);
+                        }
+                    });
+                });
+
+                // Update tracked event ID
+                currentViewedEventId = newEventId;
+
+                // Re-init panzoom and restore/center position
+                initPanzoom(isSameExecution);
             } catch (err) {
                 console.error('Mermaid error:', err);
-                container.innerHTML = '<div style="color: var(--accent-rose); padding: 20px;">Graph render error</div>';
+                container.innerHTML = `<div style="color: var(--accent-red); padding: 20px;">Graph render error: ${err.message}</div>`;
             }
         }
 
-        // Render Functions
-        function renderEventBadge(ev) {
+        // ═══════════════════════════════════════════════════════════════
+        // RENDER UI
+        // ═══════════════════════════════════════════════════════════════
+
+        function renderEventBadge() {
             const badge = document.getElementById('event-badge');
-            if (!ev) {
+            const event = currentState?.triggerEvent;
+
+            if (!event) {
                 badge.classList.remove('visible');
                 return;
             }
+
             badge.classList.add('visible');
-            document.getElementById('event-badge-type').textContent = ev.eventType || '-';
-            document.getElementById('event-badge-source').textContent = ev.source || '-';
+            document.getElementById('event-type-tag').textContent = event.eventType || '-';
+            document.getElementById('event-source-text').textContent = `Source: ${event.source || '-'}`;
         }
 
-        function renderTimeline(timeline, replans) {
+        function renderTimeline() {
             const container = document.getElementById('timeline-scroll');
+            const timeline = currentState?.timeline || [];
+            const replans = currentState?.replans || [];
 
-            if ((!timeline || timeline.length === 0) && (!replans || replans.length === 0)) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◌</div><div>No activity</div></div>';
+            if (timeline.length === 0 && replans.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">&#8987;</div>
+                        <div>No activity yet</div>
+                    </div>
+                `;
                 return;
             }
 
             let html = '';
 
-            if (timeline?.length > 0) {
-                html += '<div class="timeline-section"><div class="timeline-section-label">Node Executions</div>';
-                timeline.forEach(node => {
+            // Node executions
+            if (timeline.length > 0) {
+                html += `<div class="timeline-section"><div class="timeline-section-label">Node Executions</div>`;
+
+                for (const node of timeline) {
                     const status = (node.status || 'PENDING').toLowerCase();
                     html += `
                         <div class="timeline-item ${status}" onclick="openNodeModal('${node.nodeId}')">
                             <div class="timeline-item-header">
-                                <span class="timeline-item-name">${escapeHtml(node.nodeId)}</span>
-                                <span class="timeline-item-badge">${node.agentType || '-'}</span>
+                                <span class="timeline-node-name">${escapeHtml(node.nodeId)}</span>
+                                <span class="timeline-agent-tag">${node.agentType || '-'}</span>
                             </div>
                             <div class="timeline-item-meta">
                                 <span>${formatTime(node.startedAt)}</span>
                                 <span>${formatDuration(node.durationMs)}</span>
                             </div>
-                            ${node.escalationReason ? `<div class="timeline-item-escalation">${escapeHtml(truncate(node.escalationReason, 80))}</div>` : ''}
+                            ${node.escalationReason ? `<div class="timeline-escalation-badge">${escapeHtml(truncate(node.escalationReason, 50))}</div>` : ''}
                         </div>
                     `;
-                });
+                }
+
                 html += '</div>';
             }
 
-            if (replans?.length > 0) {
-                html += '<div class="timeline-section"><div class="timeline-section-label">Replan Events</div>';
-                replans.forEach((r, i) => {
+            // Replans
+            if (replans.length > 0) {
+                html += `<div class="timeline-section"><div class="timeline-section-label">Replan Events</div>`;
+
+                for (let i = 0; i < replans.length; i++) {
+                    const replan = replans[i];
                     html += `
                         <div class="replan-item" onclick="openReplanModal(${i})">
-                            <div class="replan-item-header">
-                                <span class="replan-badge">REPLAN #${r.replanNumber}</span>
-                                <span class="replan-action">${r.action || '-'}</span>
+                            <div class="replan-header">
+                                <span class="replan-tag">REPLAN #${replan.replanNumber}</span>
+                                <span class="replan-action">${replan.action || '-'}</span>
                             </div>
-                            <div class="replan-trigger">Trigger: ${escapeHtml(r.triggerNodeId || '-')}</div>
+                            <div class="replan-trigger">Triggered by: <strong>${escapeHtml(replan.triggerNodeId || '-')}</strong></div>
                         </div>
                     `;
-                });
+                }
+
                 html += '</div>';
             }
 
             container.innerHTML = html;
         }
 
-        function renderExecInfo(state) {
-            const info = document.getElementById('exec-info');
-            if (!state?.currentExecution) {
-                info.classList.remove('visible');
+        function renderFooter() {
+            const exec = currentState?.currentExecution;
+
+            if (!exec) {
+                document.getElementById('exec-event-id').textContent = '-';
+                document.getElementById('exec-workflow').textContent = '-';
+                document.getElementById('exec-status').textContent = '-';
+                document.getElementById('exec-status').className = 'exec-value';
+                document.getElementById('exec-duration').textContent = '-';
+                document.getElementById('exec-replans').textContent = '0';
                 return;
             }
-            info.classList.add('visible');
-            const e = state.currentExecution;
-            document.getElementById('exec-event-id').textContent = truncate(e.eventId, 20) || '-';
-            document.getElementById('exec-workflow').textContent = e.workflowName || '-';
+
+            document.getElementById('exec-event-id').textContent = truncate(exec.eventId, 12) || '-';
+            document.getElementById('exec-workflow').textContent = truncate(exec.workflowName, 30) || '-';
+
             const statusEl = document.getElementById('exec-status');
-            statusEl.textContent = e.state || '-';
-            statusEl.className = `exec-value ${(e.state || '').toLowerCase()}`;
-            document.getElementById('exec-duration').textContent = formatDuration(e.durationMs);
-            document.getElementById('exec-replans').textContent = e.replanCount || 0;
+            const status = exec.state || 'UNKNOWN';
+            statusEl.textContent = status;
+            statusEl.className = `exec-value ${status.toLowerCase()}`;
+
+            document.getElementById('exec-duration').textContent = formatDuration(exec.durationMs);
+            document.getElementById('exec-replans').textContent = exec.replanCount || 0;
+
+            // Show/hide back to live button
+            document.getElementById('back-to-live').classList.toggle('visible', !!selectedEventId);
         }
 
-        function renderHistory(history) {
-            const container = document.getElementById('history-scroll');
-            if (!history?.length) {
-                container.innerHTML = '<span style="font-size: 10px; color: var(--text-dim);">No history</span>';
-                return;
-            }
-            container.innerHTML = history.slice(0, 8).map(h => `
-                <div class="history-chip${h.eventId === selectedEventId ? ' selected' : ''}" onclick="loadExecution('${h.eventId}')">
-                    <span class="history-chip-dot ${h.state || 'UNKNOWN'}"></span>
-                    <span>${escapeHtml(truncate(h.workflowName || 'Unknown', 16))}</span>
-                </div>
-            `).join('');
-        }
-
-        function updateStatus(state) {
+        function updateStatus() {
             const dot = document.getElementById('status-dot');
             const label = document.getElementById('status-label');
+
             dot.classList.remove('ready', 'active');
 
-            if (!state) {
-                label.textContent = 'Offline';
+            if (!currentState) {
+                label.textContent = 'Disconnected';
                 return;
             }
 
-            if (state.hasActiveExecution) {
+            if (currentState.hasActiveExecution) {
                 dot.classList.add('active');
                 label.textContent = 'Processing';
             } else {
@@ -1686,62 +2395,43 @@
             }
         }
 
-        // Fetch & Poll
+        // ═══════════════════════════════════════════════════════════════
+        // DATA FETCHING
+        // ═══════════════════════════════════════════════════════════════
+
         async function fetchState() {
             try {
-                const url = selectedEventId ? `/api/v1/debug/${selectedEventId}` : '/api/v1/debug/state';
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                currentState = await res.json();
+                const url = selectedEventId
+                    ? `/api/v1/debug/${selectedEventId}`
+                    : '/api/v1/debug/state';
 
-                updateStatus(currentState);
-                renderGraph(currentState);
-                renderEventBadge(currentState.triggerEvent);
-                renderTimeline(currentState.timeline, currentState.replans);
-                renderExecInfo(currentState);
-                if (!selectedEventId) renderHistory(currentState.recentHistory);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-                document.getElementById('back-btn').style.display = selectedEventId ? 'inline' : 'none';
+                currentState = await response.json();
+
+                updateStatus();
+                renderEventBadge();
+                renderGraph();
+                renderTimeline();
+                renderFooter();
+
             } catch (err) {
                 console.error('Fetch error:', err);
-                updateStatus(null);
+                updateStatus();
             }
         }
 
-        async function loadExecution(eventId) {
-            selectedEventId = eventId;
-            await fetchState();
-        }
+        // ═══════════════════════════════════════════════════════════════
+        // INITIALIZATION
+        // ═══════════════════════════════════════════════════════════════
 
-        function clearSelection() {
-            selectedEventId = null;
-            fetchState();
-        }
+        // Initial fetch on page load (no auto-polling)
+        document.addEventListener('DOMContentLoaded', fetchState);
 
-        // Init
-        let pollInterval = null;
-        function startPolling() {
-            fetchState();
-            pollInterval = setInterval(fetchState, 2000);
-        }
-
-        document.addEventListener('DOMContentLoaded', startPolling);
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && pollInterval) {
-                clearInterval(pollInterval);
-                pollInterval = null;
-            } else if (!document.hidden && !pollInterval) {
-                startPolling();
-            }
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeModalById('event-modal');
-                closeModalById('node-modal');
-                closeModalById('replan-modal');
-            }
+        // Close modal on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && activeModal) closeModal();
         });
     </script>
 </body>

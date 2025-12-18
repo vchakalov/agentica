@@ -44,8 +44,31 @@ agentica:
     default-model: gemini-2.0-flash
     dev-ui-enabled: false
     dev-server-port: 8081
+    auto-approve-review: true
 
   integrations:
     default-timeout-ms: 30000
     retry-attempts: 3
     retry-delay-ms: 1000
+
+  mcp:
+    facebook:
+      server-path: ${FACEBOOK_MCP_SERVER_PATH:}
+      timeout-seconds: 30
+      page-access-token: ${FACEBOOK_PAGE_ACCESS_TOKEN:}
+      page-id: ${FACEBOOK_PAGE_ID:}
+
+  event-sources:
+    enabled: true
+    default-poll-interval-ms: 60000
+    max-retry-attempts: 3
+    retry-backoff-ms: 5000
+    facebook:
+      enabled: true
+      graph-api-version: v21.0
+      graph-api-base-url: https://graph.facebook.com
+      poll-interval-ms: 60000
+      max-comments-per-poll: 500
+      initial-lookback-hours: 24
+      connection-timeout-ms: 10000
+      read-timeout-ms: 30000

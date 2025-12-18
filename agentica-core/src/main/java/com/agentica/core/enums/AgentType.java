@@ -28,6 +28,21 @@ public enum AgentType {
     /**
      * Handles marketing activities.
      */
-    MARKETING
+    MARKETING,
+
+    /**
+     * Handles Facebook social media interactions.
+     */
+    FACEBOOK,
+
+    /**
+     * Human-in-the-loop review and approval.
+     */
+    REVIEW,
+
+    /**
+     * Handles content translation between languages.
+     */
+    TRANSLATION
 
 }

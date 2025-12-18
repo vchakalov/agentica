@@ -1,55 +1,35 @@
 package com.agentica.agents.orchestrator;
 
 import com.agentica.core.domain.Event;
-import com.agentica.core.domain.WorkflowStep;
-
-import java.util.List;
+import com.agentica.core.workflow.ReplanRequest;
+import com.agentica.core.workflow.ReplanResult;
+import com.agentica.core.workflow.WorkflowPlan;
 
 /**
- * Agent responsible for creating workflow execution plans
- * for actionable events.
+ * Agent responsible for designing dynamic workflow plans for incoming events.
+ * Uses structured output to generate WorkflowPlan JSON that is validated and
+ * built into LangGraph4j StateGraphs for execution.
  */
 public interface OrchestratorAgent {
 
     /**
-     * Creates a workflow plan for the given event.
+     * Designs a workflow plan for the given event using structured output.
+     * The orchestrator LLM analyzes the event and outputs a complete WorkflowPlan
+     * that can be built into a LangGraph4j StateGraph.
      *
-     * @param event the actionable event
-     * @return a result containing the workflow plan
+     * @param event the event to design a workflow for
+     * @return the designed WorkflowPlan
      */
-    OrchestrationResult orchestrate(Event event);
+    WorkflowPlan planWorkflow(Event event);
 
     /**
-     * Result of the orchestrator agent planning.
+     * Replans a workflow based on agent escalation.
+     * Called when an agent signals needsReplan during workflow execution.
+     * The orchestrator analyzes the escalation context and decides how to modify the plan.
+     *
+     * @param request the replan request containing current state and escalation context
+     * @return the replan result containing decision and LLM interaction details
      */
-    record OrchestrationResult(
-
-            boolean success,
-
-            String workflowName,
-
-            String workflowDescription,
-
-            List<WorkflowStep> steps,
-
-            String errorMessage
-
-    ) {
-
-        /**
-         * Creates a successful orchestration result.
-         */
-        public static OrchestrationResult success(String name, String description, List<WorkflowStep> steps) {
-            return new OrchestrationResult(true, name, description, steps, null);
-        }
-
-        /**
-         * Creates a failed orchestration result.
-         */
-        public static OrchestrationResult failure(String errorMessage) {
-            return new OrchestrationResult(false, null, null, List.of(), errorMessage);
-        }
-
-    }
+    ReplanResult replan(ReplanRequest request);
 
 }

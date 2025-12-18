@@ -6,6 +6,7 @@ import com.agentica.core.domain.Event;
 import com.agentica.core.service.EventService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -31,27 +32,25 @@ public class WebhookController {
 
     private final EventService eventService;
 
-    @PostMapping("/hookdeck")
+    @GetMapping("/hookdeck")
     @Operation(summary = "Receive Hookdeck webhook", description = "Receives normalized webhooks from Hookdeck")
-    public ResponseEntity<WebhookResponse> receiveHookdeckWebhook(
-            @RequestHeader(TENANT_ID_HEADER) String tenantId,
-            @Valid @RequestBody WebhookRequest request) {
+    public ResponseEntity<WebhookResponse> receiveHookdeckWebhook() {
 
-        log.info("Received Hookdeck webhook, tenantId: {}, eventType: {}, source: {}",
-                tenantId, request.eventType(), request.source());
+//        log.info("Received Hookdeck webhook, tenantId: {}, eventType: {}, source: {}",
+//                tenantId, request.eventType(), request.source());
 
-        Event event = eventService.ingest(
-                tenantId,
-                request.eventType(),
-                request.source(),
-                request.externalId(),
-                request.payload()
-        );
+//        Event event = eventService.ingest(
+//                tenantId,
+//                request.eventType(),
+//                request.source(),
+//                request.externalId(),
+//                request.payload()
+//        );
 
-        log.info("Event ingested, eventId: {}, tenantId: {}", event.id(), tenantId);
+//        log.info("Event ingested, eventId: {}, tenantId: {}", event.id(), tenantId);
 
         return ResponseEntity.accepted().body(WebhookResponse.builder()
-                .eventId(event.id())
+//                .eventId(event.id())
                 .status("ACCEPTED")
                 .message("Event received and queued for processing")
                 .receivedAt(Instant.now())

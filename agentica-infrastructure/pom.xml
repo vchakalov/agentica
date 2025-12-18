@@ -50,6 +50,10 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
         </dependency>
+      <dependency>
+        <groupId>com.agentica</groupId>
+        <artifactId>agentica-agents</artifactId>
+      </dependency>
     </dependencies>
 
 </project>

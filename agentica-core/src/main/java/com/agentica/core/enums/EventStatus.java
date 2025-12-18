@@ -5,34 +5,34 @@ package com.agentica.core.enums;
  */
 public enum EventStatus {
 
-    /**
-     * Event received but not yet processed.
-     */
-    PENDING,
+  /**
+   * Event received but not yet processed.
+   */
+  PENDING,
 
-    /**
-     * Event is currently being processed by the filter agent.
-     */
-    PROCESSING,
+  /**
+   * Event is currently being processed by the filter agent.
+   */
+  PROCESSING,
 
-    /**
-     * Event was filtered out (no action required).
-     */
-    FILTERED,
+  /**
+   * Event was filtered out (no action required).
+   */
+  SKIPPED,
 
-    /**
-     * Event is actionable and a workflow has been created.
-     */
-    ACTIONABLE,
+  /**
+   * Event is actionable and a workflow has been created.
+   */
+  ACTIONABLE,
 
-    /**
-     * Event processing completed successfully.
-     */
-    COMPLETED,
+  /**
+   * Event processing completed successfully.
+   */
+  COMPLETED,
 
-    /**
-     * Event processing failed.
-     */
-    FAILED
+  /**
+   * Event processing failed.
+   */
+  FAILED
 
 }
